@@ -6,8 +6,9 @@ import { useNavigate } from "react-router-dom";
 const Landing = () => {
   const navigate = useNavigate();
   const [breakfastData, setBreakfastData] = useState(null);
-  const [lunchData, setLunchData] = useState();
+  const [lunchData, setLunchData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [timeTable, setTimeTable] = useState(null);
 
   const now = new Date();
   const day = now.getDate();
@@ -32,23 +33,38 @@ const Landing = () => {
       const resData = await response.json();
       setBreakfastData(resData.breakfast);
       setLunchData(resData.lunch);
+      setTimeTable({
+        breakfast: {
+          from: parseInt(resData.timeTable[0][1]),
+          to: parseInt(resData.timeTable[0][2]),
+        },
+        lunch: {
+          from: parseInt(resData.timeTable[1][1]),
+          to: parseInt(resData.timeTable[1][2]),
+        },
+      });
     })();
   }, []);
 
-  if (breakfastData && lunchData && hour <= 11) {
-    window.location.replace(breakfastData[dayIndex][1]);
-  } else if (breakfastData && lunchData && hour >= 11) {
-   
-    if(day < 8) {
+  if (breakfastData && lunchData && timeTable) {
+    if (hour < timeTable.breakfast.to) {
+      window.location.replace(breakfastData[dayIndex][1]);
+    } else if (hour >= timeTable.lunch.from && hour < timeTable.lunch.to) {
+      if (day < 8) {
         window.location.replace(lunchData[dayIndex][1]);
-    } else if(day > 7 && day < 15) {
+      } else if (day > 7 && day < 15) {
         window.location.replace(lunchData[dayIndex][2]);
-    } else if (day > 14 && day < 21) {
+      } else if (day > 14 && day < 21) {
         window.location.replace(lunchData[dayIndex][3]);
-    } else if (day > 21) {
+      } else if (day > 21) {
         window.location.replace(lunchData[dayIndex][4]);
+      }
+    } else if (hour >= timeTable.breakfast.from) {
+      window.location.replace(breakfastData[dayIndex + 1][1]);
     }
   }
+
+
 
   return (
     <div className={styles.loader}>

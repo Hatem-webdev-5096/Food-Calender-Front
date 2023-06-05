@@ -28,7 +28,7 @@ const Landing = () => {
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const response = await fetch("http://localhost:8000/getData");
+      const response = await fetch("https://food-calender-server.onrender.com/getData");
       const resData = await response.json();
       setBreakfastData(resData.breakfast);
       setLunchData(resData.lunch);

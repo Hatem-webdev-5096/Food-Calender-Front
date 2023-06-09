@@ -26,10 +26,17 @@ const Landing = () => {
   ];
   const dayName = daysOfWeek[dayIndex];
 
+  const firstDayOfMonth = new Date(year, month, 1);
+  const firstSundayIndex = (7 - firstDayOfMonth.getDay()) % 7;
+
+  const modifiedDayIndex = (day + firstSundayIndex - 1) % 7;
+
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const response = await fetch("https://food-calender-server.onrender.com/getData");
+      const response = await fetch(
+        "https://food-calender-server.onrender.com/getData"
+      );
       const resData = await response.json();
       setBreakfastData(resData.breakfast);
       setLunchData(resData.lunch);
@@ -48,23 +55,21 @@ const Landing = () => {
 
   if (breakfastData && lunchData && timeTable) {
     if (hour < timeTable.breakfast.to) {
-      window.location.replace(breakfastData[dayIndex][1]);
+      window.location.replace(breakfastData[modifiedDayIndex][1]);
     } else if (hour >= timeTable.lunch.from && hour < timeTable.lunch.to) {
       if (day < 8) {
-        window.location.replace(lunchData[dayIndex][1]);
+        window.location.replace(lunchData[modifiedDayIndex][1]);
       } else if (day > 7 && day < 15) {
-        window.location.replace(lunchData[dayIndex][2]);
+        window.location.replace(lunchData[modifiedDayIndex][2]);
       } else if (day > 14 && day < 21) {
-        window.location.replace(lunchData[dayIndex][3]);
-      } else if (day > 21) {
-        window.location.replace(lunchData[dayIndex][4]);
+        window.location.replace(lunchData[modifiedDayIndex][3]);
+      } else if (day > 21 && day < 29) {
+        window.location.replace(lunchData[modifiedDayIndex][4]);
       }
     } else if (hour >= timeTable.breakfast.from) {
-      window.location.replace(breakfastData[dayIndex + 1][1]);
+      window.location.replace(breakfastData[modifiedDayIndex + 1][1]);
     }
   }
-
-
 
   return (
     <div className={styles.loader}>

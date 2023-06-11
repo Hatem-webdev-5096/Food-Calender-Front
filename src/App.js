@@ -5,7 +5,6 @@ import {
   redirect,
 } from "react-router-dom";
 
-import printDayNamesCurrentMonth from "./helper/virualMonth";
 
 function App() {
   
@@ -14,10 +13,12 @@ function App() {
     {path: "/", element: <Landing />}
   ])
 
-  printDayNamesCurrentMonth();
+  // printDayNamesCurrentMonth();
 
-  return;
+  return(
     <RouterProvider router={router} />
+  )
+    
 
 
  

@@ -9,6 +9,8 @@ const Landing = () => {
   const [lunchData, setLunchData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [timeTable, setTimeTable] = useState(null);
+  const [actualDayNames, setActualDayNames] = useState([]);
+  // const [activeWeek, setActiveWeek] = useState(null);
 
   const now = new Date();
   const day = now.getDate();
@@ -27,8 +29,40 @@ const Landing = () => {
     "Saturday",
   ];
   const dayName = daysOfWeek[dayIndex];
+  const numDays = new Date(year, month + 1, 0).getDate();
+
+  useEffect(() => {
+    const dayNames = [];
+    for (let day = 1; day <= numDays; day++) {
+      const date = new Date(year, month, day);
+      const dayName = date.toLocaleString("en-US", { weekday: "long" });
+      dayNames.push(dayName);
+    }
+    setActualDayNames(dayNames);
+  }, []);
+
+  const firstSundayIndex = actualDayNames.findIndex((d) => {
+    return d === "Sunday";
+  });
+  let activeWeek;
 
 
+  if (day < firstSundayIndex) {
+    activeWeek = 4;
+  } else if (day > firstSundayIndex) {
+    if (day - firstSundayIndex <= 7) {
+      activeWeek = 1
+    } else if (day - firstSundayIndex > 7 && day - firstSundayIndex <= 14) {
+      activeWeek = 2;
+    } else if (day - firstSundayIndex > 14 && day - firstSundayIndex <= 21) {
+      activeWeek = 3;
+    } else if (day - firstSundayIndex > 21) {
+      activeWeek = 4;
+    }
+  } else {
+    activeWeek = 1;
+  }
+  console.log(activeWeek);
   useEffect(() => {
     (async () => {
       setIsLoading(true);
@@ -56,15 +90,16 @@ const Landing = () => {
     if (hour < timeTable.breakfast.to) {
       window.location.replace(breakfastData[dayIndex][1]);
     } else if (hour >= timeTable.lunch.from && hour < timeTable.lunch.to) {
-      if (day < 8) {
-        window.location.replace(lunchData[dayIndex][1]);
-      } else if (day > 7 && day < 15) {
-        window.location.replace(lunchData[dayIndex][2]);
-      } else if (day > 14 && day < 21) {
-        window.location.replace(lunchData[dayIndex][3]);
-      } else if (day > 21 && day < 29) {
-        window.location.replace(lunchData[dayIndex][4]);
-      }
+      window.location.replace(lunchData[dayIndex][activeWeek]);
+      // if (day < 8) {
+      //   window.location.replace(lunchData[dayIndex][activeWeek]);
+      // } else if (day > 7 && day < 15) {
+      //   window.location.replace(lunchData[dayIndex][activeWeek]);
+      // } else if (day > 14 && day < 21) {
+      //   window.location.replace(lunchData[dayIndex][activeWeek]);
+      // } else if (day > 21 && day < 29) {
+      //   window.location.replace(lunchData[dayIndex][activeWeek]);
+      // }
     } else if (hour >= timeTable.breakfast.from) {
       window.location.replace(breakfastData[dayIndex + 1][1]);
     }

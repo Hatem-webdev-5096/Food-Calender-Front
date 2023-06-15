@@ -10,7 +10,6 @@ const Landing = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [timeTable, setTimeTable] = useState(null);
   const [actualDayNames, setActualDayNames] = useState([]);
-  // const [activeWeek, setActiveWeek] = useState(null);
 
   const now = new Date();
   const day = now.getDate();
@@ -18,6 +17,7 @@ const Landing = () => {
   const dayIndex = now.getDay();
   const month = now.getMonth();
   const year = now.getFullYear();
+
 
   const daysOfWeek = [
     "Sunday",
@@ -56,13 +56,20 @@ const Landing = () => {
       activeWeek = 2;
     } else if (day - firstSundayIndex > 14 && day - firstSundayIndex <= 21) {
       activeWeek = 3;
-    } else if (day - firstSundayIndex > 21) {
+    } else if (day - firstSundayIndex > 21 && day - firstSundayIndex < 29) {
       activeWeek = 4;
+    } else if (day - firstSundayIndex >= 29 ) {
+        if ( (month + 1) % 2 === 0 ) {
+          activeWeek = 5;
+        } else if ( (month + 1) % 2 !== 0 )
+      activeWeek = 6;
     }
   } else {
     activeWeek = 1;
   }
-  console.log(activeWeek);
+
+  console.log(dayIndex);
+
   useEffect(() => {
     (async () => {
       setIsLoading(true);

@@ -74,8 +74,8 @@ const Landing = () => {
     (async () => {
       setIsLoading(true);
       const response = await fetch(
-        // "https://food-calender-server.onrender.com/getData"
-        "http://localhost:8000/getData"
+        "https://food-calender-server.onrender.com/getData"
+        // "http://localhost:8000/getData"
       );
       const resData = await response.json();
       setBreakfastData(resData.breakfast);
